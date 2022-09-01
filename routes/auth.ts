@@ -1,16 +1,17 @@
-import { body, validationResult } from "express-validator";
+require("dotenv").config();
+import { validationResult } from "express-validator";
 import { User } from "../db/User";
 import JWT from "jsonwebtoken";
-require("dotenv").config();
-
 import bcrypt from "bcrypt";
-
+import { validationCheck } from "../middleware/validationCheck";
 const router = require("express").Router();
+
 
 interface UserData {
   email: string;
   password: string;
 }
+
 
 router.get("/", (req: any, res: any) => {
   res.send("Hello Auth");
@@ -20,8 +21,7 @@ router.get("/", (req: any, res: any) => {
 router.post(
   "/register",
   // バリデーションチェック
-  body("email").isEmail(),
-  body("password").isLength({ min: 6 }),
+  validationCheck,
   async (req: any, res: any) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -115,8 +115,11 @@ router.post(
 );
 
 // ユーザー確認用のAPI（開発用）
-router.get("/allUsers", (req: any, res: { json: (arg0: { email: string; password: string }[]) => any }) => {
-  return res.json(User);
-});
+router.get(
+  "/allUsers",
+  (req: any, res: { json: (arg0: { email: string, password: string }[]) => any }) => {
+    return res.json(User);
+  }
+);
 
 module.exports = router;
