@@ -4,16 +4,10 @@ import { User } from "../db/User";
 import JWT from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { validationCheck } from "../middleware/validationCheck";
+import { UserData } from "../types/UserData";
 const router = require("express").Router();
 
-
-interface UserData {
-  email: string;
-  password: string;
-}
-
-
-router.get("/", (req: any, res: any) => {
+router.get("/", (req: any, res: { send: (arg0: string) => void }) => {
   res.send("Hello Auth");
 });
 
@@ -71,7 +65,7 @@ router.post(
 router.post(
   "/login",
   async (
-    req: { body: { email: any; password: any } },
+    req: { body: { email: string; password: string } },
     res: {
       status: (arg0: number) => { (): any; new (): any; json: { (arg0: { message: string }[]): any; new (): any } };
       json: (arg0: { token: string }) => any;
@@ -115,11 +109,8 @@ router.post(
 );
 
 // ユーザー確認用のAPI（開発用）
-router.get(
-  "/allUsers",
-  (req: any, res: { json: (arg0: { email: string, password: string }[]) => any }) => {
-    return res.json(User);
-  }
-);
+router.get("/allUsers", (req: any, res: { json: (arg0: { email: string; password: string }[]) => any }) => {
+  return res.json(User);
+});
 
 module.exports = router;
